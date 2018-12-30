@@ -108,17 +108,17 @@ int		get_arg3_pos(unsigned char code)
 
 int		get_nb(int i, unsigned char *arena, unsigned char code, t_player *pl)
 {
-	if (code == 64 || code == 16)
-	{
 
-	}
-	else if (code == 128 || code == 32)
-	{
+	int	index;
 
-	}
+	if (code == 16 || code == 64)
+		return (get_int(pl->regs[get_regis(arena, i)]));
+	else if (code == 32 || code == 128)
+		return (get_int(arena + i));
 	else
 	{
-
+		index = get_ind(i, arena);
+		return (get_int(arena + pl->i + index));
 	}
 }
 
@@ -144,29 +144,41 @@ void	and(t_player *pl, unsigned char *arena)
 	res = (nb1 & nb2 ) % MEM_SIZE;
 	tmp = int_to_bit(res);
 	fill_regis(pl->regs[get_regis(pl->i + get_arg3_pos(arena[pl->i + 1])) - 1], tmp);
+}
 
+void	or(t_player *pl, unsigned char *arena)
+{
+	int		res;
+	int		nb1;
+	int		nb2;
+	char	*tmp;
 
-	
-	if (arena[pl->i + 1] & 192 == 192)
-	{
-		if (arena[pl->i + 1] & 192 == 192)
-		{
+	nb1 = get_nb(pl->i + 1, arena, arena[pl->i + 1] & 192, pl);
+	nb2 = get_nb(pl->i + get_arg2_pos(arena[pl->i + 1]), arena, arena[pl->i + 1] & 48, pl);
+	res = (nb1 | nb2 ) % MEM_SIZE;
+	tmp = int_to_bit(res);
+	fill_regis(pl->regs[get_regis(pl->i + get_arg3_pos(arena[pl->i + 1])) - 1], tmp);
+}
 
-		}
-		else
-		{
+void	xor(t_player *pl, unsigned char *arena)
+{
+	int		res;
+	int		nb1;
+	int		nb2;
+	char	*tmp;
 
-		}
-	}
-	else
-	{
-		if (arena[pl->i + 1] & 192 == 192)
-		{
+	nb1 = get_nb(pl->i + 1, arena, arena[pl->i + 1] & 192, pl);
+	nb2 = get_nb(pl->i + get_arg2_pos(arena[pl->i + 1]), arena, arena[pl->i + 1] & 48, pl);
+	res = (nb1 ^ nb2 ) % MEM_SIZE;
+	tmp = int_to_bit(res);
+	fill_regis(pl->regs[get_regis(pl->i + get_arg3_pos(arena[pl->i + 1])) - 1], tmp);
+}
 
-		}
-		else
-		{
-			
-		}
-	}
+void	zjump(t_player *pl, unsigned char *arena)
+{
+	int	index;
+
+	index = get_ind(pl->i + 1, arena);
+	if(pl->carry)
+		pl->i += index;
 }
