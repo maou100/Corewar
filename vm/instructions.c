@@ -6,7 +6,7 @@
 /*   By: feedme <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/11 17:46:50 by feedme            #+#    #+#             */
-/*   Updated: 2018/12/18 10:14:00 by feedme           ###   ########.fr       */
+/*   Updated: 2019/01/05 16:16:43 by feedme           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,38 +14,40 @@
 
 char	*char_to_bit(unsigned char c)
 {
-	char	*new;
+	char	*bitstr;
 	int		i;
 
-	if (!(new = ft_strnew(8)))
+	if (!(bitstr = ft_strnew(9)))
 		ft_exit_msg("Malloc error \n");
+	bitstr[8] = '\0';
 	i = 8;
 	while (c > 0)
 	{
-		new[--i] = (c % 2) ? '1' : '0';
+		bitstr[--i] = (c % 2) ? '1' : '0';
 		c /= 2;
 	}
 	while (--i >= 0)
-		new[i] = '0';
-	return (new);
+		bitstr[i] = '0';
+	return (bitstr);
 }
 
-char	*int_to_bit(int nb)
+char	*int_to_bit(int c)
 {
-	char	*new;
+	char	*bitstr;
 	int		i;
 
-	if (!(new = ft_strnew(32)))
+	if (!(bitstr = ft_strnew(33)))
 		ft_exit_msg("Malloc error \n");
+	bitstr[32] = '\0';
 	i = 32;
 	while (c > 0)
 	{
-		new[--i] = (c % 2) ? '1' : '0';
+		bitstr[--i] = (c % 2) ? '1' : '0';
 		c /= 2;
 	}
 	while (--i >= 0)
-		new[i] = '0';
-	return (new);
+		bitstr[i] = '0';
+	return (bitstr);
 }
 
 void	fill_regis(unsigned char *reg, char *bits)
@@ -66,9 +68,14 @@ void	fill_regis(unsigned char *reg, char *bits)
 char	*get_dir(int i, unsigned char *arena)
 {
 	char	*new;
+	int		j;
 
-	if (!(new = strsub(arena, i, DIR_SIZE)))
-		ft_exit_msg("Malloc error \n");
+	j = -1;
+	if (!(new = ft_strnew(DIR_SIZE + 1)))
+		exit(-1);
+	new[DIR_SIZE] = '\0';
+	while (++j < DIR_SIZE)
+		new[j] = arena[(i + j) % MEM_SIZE]
 	return (new);
 }
 
@@ -99,7 +106,7 @@ int		bit_to_dec(char *str, int size)
 	return (res);
 }
 
-int		get_ind(int i, unsigned char *arena)
+int		get_ind(int i, unsigned char *arena, int size)
 {
 	char	*str;
 	int		index;
@@ -109,40 +116,16 @@ int		get_ind(int i, unsigned char *arena)
 
 	j = -1;
 	str = ft_strnew(0);
-	while (++j < IND_SIZE)
+	while (++j < size)
 	{
-		tmp = char_to_bit(arena[i + j]);
+		tmp = char_to_bit(arena[(i + j) % MEM_SIZE]);
 		tmp2 = strjoin(str, tmp);
 		free(str);
 		free(tmp);
 		str = ft_strdup(tmp2);
 		free(tmp2);
 	}
-	index = bit_to_dec(str, IND_SIZE);
-	free(str);
-	return (index);
-}
-
-int		get_int(char *regis)
-{
-	char	*str;
-	int		index;
-	char	*tmp;
-	char	*tmp2;
-	int		j;
-
-	j = -1;
-	str = ft_strnew(0);
-	while (++j < 4)
-	{
-		tmp = char_to_bit(regis[j]); // easy mais important: changer les strjoin etc pr que ca marche avec size
-		tmp2 = strjoin(str, tmp);
-		free(str);
-		free(tmp);
-		str = ft_strdup(tmp2);
-		free(tmp2);
-	}
-	index = bit_to_dec(str, REG_SIZE);
+	index = bit_to_dec(str, size);
 	free(str);
 	return (index);
 }
