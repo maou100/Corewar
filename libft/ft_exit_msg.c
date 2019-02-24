@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   ft_exit_msg.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: feedme <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: amagnan <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/09/17 16:03:02 by feedme            #+#    #+#             */
-/*   Updated: 2018/10/17 01:06:01 by feedme           ###   ########.fr       */
+/*   Created: 2018/12/11 16:16:33 by amagnan           #+#    #+#             */
+/*   Updated: 2018/12/11 16:16:33 by amagnan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-void	ft_exit_msg(char *str)
+void		ft_exit_msg(char *str)
 {
-	ft_putstr(str);
-	exit(0);
+	ft_putstr_fd(str, 2);
+	exit(-1);
 }

@@ -3,18 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   ft_putstr_fd.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: feedme <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: amagnan <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/04/23 19:10:30 by feedme            #+#    #+#             */
-/*   Updated: 2018/04/23 19:13:26 by feedme           ###   ########.fr       */
+/*   Created: 2018/09/11 15:51:24 by amagnan           #+#    #+#             */
+/*   Updated: 2018/09/11 15:51:25 by amagnan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-void	ft_putstr_fd(char const *s, int fd)
+void		ft_putstr_fd(char const *s, int fd)
 {
-	unsigned int	i;
+	int		i;
 
 	i = 0;
 	while (s[i])

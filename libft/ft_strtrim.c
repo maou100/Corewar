@@ -3,49 +3,38 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strtrim.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: feedme <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: amagnan <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/04/23 19:48:13 by feedme            #+#    #+#             */
-/*   Updated: 2018/05/06 18:50:02 by feedme           ###   ########.fr       */
+/*   Created: 2018/09/11 14:09:21 by amagnan           #+#    #+#             */
+/*   Updated: 2018/09/11 14:09:23 by amagnan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-static char	*ft_helper(unsigned int beginning, unsigned int end, char const *s)
+char	*ft_strtrim(char const *s)
 {
-	unsigned int	i;
-	char			*trimmed;
-
-	i = -1;
-	if ((trimmed = (char *)malloc((end - beginning) + 1)) == NULL)
-		return (NULL);
-	while (beginning <= end)
-	{
-		trimmed[++i] = s[beginning];
-		beginning++;
-	}
-	trimmed[i] = '\0';
-	return (trimmed);
-}
-
-char		*ft_strtrim(char const *s)
-{
-	unsigned int	i;
-	unsigned int	beginning;
-	unsigned int	end;
+	int		i;
+	int		len;
+	char	*str;
 
 	if (s == NULL)
 		return (NULL);
-	i = 0;
-	while (s[i] == ' ' || s[i] == '\n' || s[i] == '\t')
-		i++;
-	beginning = i;
-	while (s[i + 1])
-		i++;
-	while (s[i] == ' ' || s[i] == '\n' || s[i] == '\t')
-		i--;
-	i++;
-	end = i;
-	return (ft_helper(beginning, end, s));
+	len = ft_strlen(s);
+	while (s[len - 1] == ' ' || s[len - 1] == '\t' || s[len - 1] == '\n')
+		len--;
+	i = -1;
+	while (s[++i] == ' ' || s[i] == '\t' || s[i] == '\n')
+		len--;
+	if (len <= 0)
+		len = 0;
+	str = (char*)malloc(sizeof(char) * (len + 1));
+	if (str == NULL)
+		return (NULL);
+	s += i;
+	i = -1;
+	while (++i < len)
+		str[i] = *s++;
+	str[i] = '\0';
+	return (str);
 }

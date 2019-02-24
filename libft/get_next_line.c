@@ -3,124 +3,68 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: feedme <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: amagnan <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/06/07 19:48:54 by feedme            #+#    #+#             */
-/*   Updated: 2018/06/28 12:04:45 by feedme           ###   ########.fr       */
+/*   Created: 2018/11/10 12:57:17 by amagnan           #+#    #+#             */
+/*   Updated: 2018/11/12 11:56:03 by amagnan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "libft.h"
 
-char	*ft_strndup(const char *src, int n)
+static int			get_first_part(char **line, char *str)
 {
-	char	*dst;
-	int		i;
+	int				i;
 
 	i = -1;
-	if (!(dst = (char*)ft_memalloc(n)))
-		return (NULL);
-	while (++i < n)
-		dst[i] = src[i];
-	dst[i] = '\0';
-	return (dst);
+	while (str[++i])
+		if (str[i] == '\n')
+			break ;
+	*line = ft_strsub(str, 0, (size_t)i);
+	return (i);
 }
 
-int		ft_extra_line(char **tab, char **line, int fd)
+static char			*get_other_part(char *str1, int i)
 {
-	int		i;
+	char			*new;
+	int				j;
 
-	i = -1;
-	while (tab[fd][++i])
+	j = 0;
+	new = ft_strnew((int)ft_strlen(str1) - i);
+	while (str1[i + j])
 	{
-		if (tab[fd][i] == '\n')
-		{
-			if (!(*line = ft_strndup(tab[fd], i)))
-				return (-1);
-			if (!(tab[fd] = ft_strsub(tab[fd], i + 1, ft_strlen(tab[fd]) - i)))
-				return (-1);
-			return (1);
-		}
+		new[j] = str1[i + j];
+		j++;
 	}
-	if (!(*line = ft_strdup(tab[fd])))
-		return (-1);
-	if (tab[fd])
-		free(tab[fd]);
-	return (0);
+	new[j] = '\0';
+	ft_strdel(&str1);
+	return (new);
 }
 
-char	*ft_join(char *line, char *buf)
+int					get_next_line(const int fd, char **line)
 {
-	int		i;
-	int		j;
-	int		line_len;
-	char	*str;
-
-	j = -1;
-	line_len = ft_strlen(line);
-	i = 0;
-	while (buf[i] != '\n')
-		i++;
-	if (!(str = (char *)ft_memalloc(line_len + i + 1)))
-		return (NULL);
-	i = -1;
-	while (line[++i])
-		str[i] = line[i];
-	while (buf[++j] != '\n')
-		str[i + j] = buf[j];
-	str[i + j] = '\0';
-	if (line)
-		free(line);
-	return (str);
-}
-
-int		ft_gnl(char **tab, int fd, char **line, char *buf)
-{
-	MACRO;
-	while ((ret = read(fd, buf, BUFF_SIZE)) > 0)
-	{
-		if (!(tab[fd] = ft_strchr(buf, '\n')))
-		{
-			if (!(tmp = ft_strjoin(*line, buf)))
-				return (-1);
-			if (line)
-				free(*line);
-			if (!(*line = ft_strdup(tmp)))
-				return (-1);
-			free(tmp);
-		}
-		else
-		{
-			if (MACRO1 || MACRO2)
-				return (-1);
-			return (1);
-		}
-		ft_bzero(buf, BUFF_SIZE + 1);
-	}
-	if (ret == 0 && *line[0] != '\0')
-		return (1);
-	else
-		return (ret);
-}
-
-int		get_next_line(const int fd, char **line)
-{
-	static char		**tab;
+	static char		*tab[4864];
+	char			*tmp;
 	char			buf[BUFF_SIZE + 1];
-	int				ret;
-	int				ex_ret;
+	int				x;
+	int				y;
 
-	if (fd < 0 || !line || fd > 4864 || BUFF_SIZE < 1)
+	if (fd < 0 || !line || read(fd, buf, 0) < 0)
 		return (-1);
-	if (tab == NULL)
-		if (!(tab = (char **)ft_memalloc(sizeof(char *) * 4864)))
-			return (-1);
-	ft_bzero(buf, BUFF_SIZE + 1);
-	if (!(*line = ft_strnew(0)))
-		return (-1);
-	if (tab[fd] != NULL)
-		if ((ex_ret = ft_extra_line(tab, line, fd)) != 0)
-			return (ex_ret);
-	ret = ft_gnl(tab, fd, line, buf);
-	return (ret);
+	(!tab[fd]) ? tab[fd] = ft_strnew(1) : 0;
+	while ((x = read(fd, buf, BUFF_SIZE)) > 0)
+	{
+		buf[x] = '\0';
+		tmp = ft_strjoin(tab[fd], buf);
+		free(tab[fd]);
+		tab[fd] = tmp;
+		if (ft_strchr(tab[fd], '\n'))
+			break ;
+	}
+	if (x < BUFF_SIZE && !ft_strlen(tab[fd]))
+		return (0);
+	y = get_first_part(line, tab[fd]);
+	(y < (int)ft_strlen(tab[fd])) ? tab[fd] =
+	get_other_part(tab[fd], y + 1) : ft_bzero(tab[fd], ft_strlen(tab[fd]));
+	return (1);
 }

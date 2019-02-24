@@ -1,36 +1,36 @@
-# **************************************************************************** #
-#                                                                              #
-#                                                         :::      ::::::::    #
-#    Makefile                                           :+:      :+:    :+:    #
-#                                                     +:+ +:+         +:+      #
-#    By: feedme <marvin@42.fr>                      +#+  +:+       +#+         #
-#                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2018/12/05 19:21:17 by feedme            #+#    #+#              #
-#    Updated: 2018/12/05 19:59:14 by feedme           ###   ########.fr        #
-#                                                                              #
-# **************************************************************************** #
+OBJECTS = *.o
+SRC = ../op/op.c\
+		src/main.c\
+		src/label.c\
+		src/parser.c\
+		src/process.c
 
-NAME = asm
-
-SRC = *.c
 LIB = ../libft/libft.a
 FLAGS = -Wall -Wextra -Werror
+NAME = asm
 
 all: $(NAME)
 
 $(NAME):
-	gcc $(FLAGS) $(SRC) $(LIB) -o $(NAME)
-
-lldb:
-	gcc $(FLAGS) $(SRC) $(LIB) -o $(NAME) -g
+	gcc $(FLAGS) $(SRC) -o $(NAME) $(LIB)
 
 sanitize:
-	gcc $(FLAGS) $(SRC) $(LIB) -o $(NAME) -fsanitize=address -g
+	gcc $(FLAGS) $(SRC) -o $(NAME) -fsanitize=address -g $(LIB)
+
+lldb:
+	gcc $(FLAGS) -g $(SRC) -o $(NAME) $(LIB)
+
+cleanlldb:
+	rm $(NAME)
+	rm -rf $(NAME).dSYM
+
+runlldb:
+	lldb ./$(NAME)
 
 clean:
-	rm -rf *.o
+	rm -f $(OBJECTS)
 
 fclean: clean
-	rm -rf $(NAME)*
+	rm -f $(NAME)
 
 re: fclean all
