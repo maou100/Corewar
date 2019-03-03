@@ -358,12 +358,19 @@ void	aff(t_process *pl, unsigned char *arena)
 	char	*tmp;
 	char	*tmp2;
 
-	// int fd2 =open("blablabla", O_CREAT | O_RDWR);
-	// ft_putnbr_fd(65, fd2);
 	i = -1;
 	if (!(bits = ft_strnew(0)))
 		exit(-1);
+	// int fd2 =open("blablabla", O_CREAT | O_RDWR);
 	reg = (get_regis(arena, (pl->index + 2) % MEM_SIZE) - 1) % REG_NUMBER;
+	// for (int x= 0; x < REG_NUMBER; x++)
+	// {
+	// 	for (int y = 0; y < 4; y++)
+	// 	{
+	// 		ft_putchar_fd(pl->r[x][y], fd2);
+	// 		ft_putchar_fd('\n', fd2);
+	// 	}
+	// }
 	while (++i < REG_SIZE)
 	{
 		tmp = char_to_bit(pl->r[reg][i]);
@@ -372,10 +379,11 @@ void	aff(t_process *pl, unsigned char *arena)
 		free(tmp);
 		bits = tmp2;
 	}
-	c = (unsigned char)(bit_to_dec(bits, REG_SIZE) % 256);
+	c = bit_to_dec(bits, REG_SIZE) % 256;
+	// close(fd2);
 	free(bits);
-	// mvprintw(32, 202, "bla: %c", c);
-	// write(fd3, &c, 1);
+	mvprintw(34, 202, "aff: %c", c);
+// 	mvaddch(0, 0, 0);
 }
 
 void	lld(t_process *pl, unsigned char *arena)

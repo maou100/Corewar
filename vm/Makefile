@@ -17,7 +17,7 @@ NAME = vm
 all: $(NAME)
 
 $(NAME):
-	gcc $(FLAGS) $(SRC) -o $(NAME) $(LIB) -fsanitize=address -g
+	gcc $(FLAGS) $(SRC) -o $(NAME) $(LIB)
 
 sanitize:
 	gcc $(FLAGS) $(SRC) -o $(NAME) -fsanitize=address -g $(LIB)

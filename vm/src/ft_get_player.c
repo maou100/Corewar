@@ -40,7 +40,7 @@ static void	get_name_and_size(int fd, t_player *p)
 		part2 = ft_itoa_base(buf[1], 16, "0123456789abcdef");
 		part3 = ft_itoa_base(buf[2], 16, "0123456789abcdef");
 		part4 = ft_itoa_base(buf[3], 16, "0123456789abcdef");
-		tmp = ft_strfjoin(ft_strjoin(part1, part2), ft_strjoin(part3, part4));
+		tmp = ft_strfjoin(ft_strfjoin(part1, part2), ft_strfjoin(part3, part4));// LEAAAAKS
 		p->header.prog_size = (unsigned int)ft_hex_to_decimal(tmp);
 		ft_strdel(&tmp);
 	}

@@ -72,6 +72,10 @@ void			ADD_INFORMATIONS(t_vm *vm)
 		i++;
 	}
 	mvprintw(31, 200, "------------------------------------------------------------");
+	if (vm->p1->last_live)
+		mvprintw(32, 202, "A process shows that player %d (%s) is alive", get_ind(0, vm->p1->nbr, 4), vm->p1->header.prog_name);
+	if (vm->p2->last_live)
+		mvprintw(32, 202, "A process shows that player %d (%s) is alive", get_ind(0, vm->p2->nbr, 4), vm->p2->header.prog_name);
 }
 
 void			output_arena(t_vm *vm)
@@ -110,6 +114,7 @@ void			output_arena(t_vm *vm)
 		if (ft_strlen(t) < 2)
 			addch('0');
 		printw(t);
+		free(t);
 		if ((i + 1) % 64 == 0)
 			ADD_END_STRING(m, i);
 		else
@@ -137,6 +142,7 @@ void			output_arena(t_vm *vm)
 		if (ft_strlen(t) < 2)
 			addch('0');
 		printw(t);
+		free(t);
 		if ((i + 1) % 64 == 0)
 			ADD_END_STRING(m, i);
 		else

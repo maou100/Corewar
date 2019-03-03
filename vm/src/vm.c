@@ -56,6 +56,7 @@ int 	c_byte_size(unsigned char c_byte)
 			count += 1;
 		i += 2;
 	}
+	free(new);
 	return (count + 2);
 }
 
@@ -243,7 +244,10 @@ int 	FT_TIME_FOR_CHECKS(t_vm *vm)
 		}
 		else
 			current->nlive = 0;
-		current = current->next;
+		if (current->next)
+			current = current->next;
+		else
+			break;
 	}
 	current->nlive = 0;}
 	vm->cycle = vm->cycle_to_die;}
@@ -279,7 +283,27 @@ void 	init_cycles(t_vm *vm, t_process *process)
 
 void	dump_mem(t_vm *vm)
 {
-	(void)vm;
+	int		i;
+	char	*tmp;
+	char	booly;
+
+	booly = 0;
+	i = -1;
+	endwin();
+	while (++i < MEM_SIZE)
+	{
+		tmp = ft_itoa_base(vm->arena[i], 16, "0123456789abcdef");
+		ft_putstr(tmp);
+		free(tmp);
+		if (booly)
+		{
+			if (i % 32 == 0)
+				write(1, "\n", 1);
+		}
+		booly = 1;
+	}
+	free_all(vm);
+	exit(0);
 }
 
 void	start_vm(t_vm *vm)
@@ -289,7 +313,7 @@ void	start_vm(t_vm *vm)
 	while (1)
 	{
 		if (!vm->nbr_cycles)
-			dump_mem(vm);// A FAIRE
+			dump_mem(vm);
 		current = vm->process;
 		while (current)
 		{
@@ -300,9 +324,9 @@ void	start_vm(t_vm *vm)
 				init_cycles(vm, current);
 			current = current->next;
 		}
-		output_arena(vm);
 		if (getch() == 127)
 			break ;
+		output_arena(vm);
 		if (!HANDLE_CYCLE(vm))
 			if (FT_TIME_FOR_CHECKS(vm))
 				break ;

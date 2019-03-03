@@ -34,27 +34,29 @@ static void			make_process(t_vm *vm)
 
 void				initialize_process(t_vm *vm)
 {
-	// if (!(vm->process = (t_process*)malloc(sizeof(t_process))))
-	// 	exit (-1);
-	// if (!(vm->process->next = (t_process*)malloc(sizeof(t_process))))
-	// 	exit (-1);
-	// vm->process->next->next = NULL;
 	vm->process->index = 0;
 	vm->process->c_to_wait = op_tab[vm->arena[vm->process->index] - 1].nb_cycle;
 	vm->process->next->index = MEM_SIZE / 2;
 	vm->process->next->c_to_wait = op_tab[vm->arena[vm->process->next->index] - 1].nb_cycle;
 }
 
-char	*build_nbr(int nb)
+unsigned char	*build_nbr(int nb)
 {
 	int				i;
 	int				j;
 	char	*bits;
-	char	*nbr;
+	unsigned char	*nbr;
 
-	if (!(nbr = ft_strnew(4)))
+
+		// int fd2 =open("blablabla", O_CREAT | O_RDWR | O_APPEND);
+		// ft_putnbr_fd(nb, fd2);
+		// close(fd2);
+		// int fd2 =open("blablabla", O_CREAT | O_RDWR | O_APPEND);
+		// ft_putnbr_fd(nb, fd2);
+		// ft_putstr_fd(", ", fd2);
+		// close(fd2);
+	if (!(nbr = (unsigned char*)malloc(4)))
 		exit(-1);
-	nbr[4] = 0;
 	bits = int_to_bit(nb);
 	i = 24;
 	j = 3;
@@ -87,14 +89,19 @@ void			ft_get_file(char **argv, t_vm *vm)
 		nbr1 = ft_atoi(argv[i + 1]);
 		i += 2;
 	}
-	vm->p1->filename = argv[i];
+	vm->p2->filename = (unsigned char*)argv[i];
 	if (!ft_strcmp(argv[++i], "-n"))
 	{
 		nbr2 = ft_atoi(argv[i + 1]);
 		i += 2;
 	}
-	vm->p2->filename = argv[i];
+	vm->p1->filename = (unsigned char*)argv[i];
 	vm->p1->nbr = build_nbr(nbr2);
+		// int fd2 =open("blablabla", O_CREAT | O_RDWR | O_APPEND);
+		// ft_putnbr_fd(nbr1, fd2);
+		// ft_putstr_fd(", ", fd2);
+		// ft_putnbr_fd(nbr2, fd2);
+		// close(fd2);
 	vm->p2->nbr = build_nbr(nbr1);
 	ft_memcpy(vm->process->r[0], vm->p1->nbr, 4);
 	ft_memcpy(vm->process->next->r[0], vm->p2->nbr, 4);
@@ -108,10 +115,12 @@ unsigned char		*ft_read_files(char **argv, t_vm *vm)
 	make_process(vm);
 	arena = (unsigned char *)ft_strnew(MEM_SIZE - 1);
 	ft_get_file(argv, vm);
-	if (((vm->p1->fd = open(vm->p1->filename, O_RDONLY)) < 0)
-		|| (vm->p2->fd = open(vm->p2->filename, O_RDONLY)) < 0)
+	if (((vm->p1->fd = open((char*)vm->p1->filename, O_RDONLY)) < 0)
+		|| (vm->p2->fd = open((char*)vm->p2->filename, O_RDONLY)) < 0)
 		ft_exit_msg("File can't be open\n");
 	if (!ft_get_player(vm->p1, arena) || !ft_get_player(vm->p2, arena + (MEM_SIZE / 2)))
 		ft_exit_msg("File error\n");
+	if (close(vm->p1->fd) == -1 || close(vm->p2->fd) == -1)
+		ft_exit_msg("Close failed\n");
 	return (arena);
 }

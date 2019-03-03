@@ -43,9 +43,9 @@ typedef struct 		s_player
 	int				talk;
 	int				nlive;
 	int				fd;
-	char			*nbr;
+	unsigned char	*nbr;
 	int				last_live;
-	char			*filename;
+	unsigned char	*filename;
 }					t_player;
 
 typedef struct 		s_vm
@@ -78,7 +78,7 @@ typedef struct 		s_op
 t_op    			op_tab[17];
 typedef void		(*t_fcts)(t_process*, unsigned char*);
 
-
+void				free_all(t_vm *vm);
 unsigned char		*ft_read_files(char **argv, t_vm *vm);
 int					ft_get_player(t_player *p, unsigned char *arena);
 t_process			*make_node(int id);
